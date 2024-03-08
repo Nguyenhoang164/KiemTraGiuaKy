@@ -38,7 +38,7 @@ public class computerController {
     @PostMapping("/add")
     public ResponseEntity<String> createComputer(@RequestBody Computer computer){
         String nameRegex = "^[A-Z].*";
-        String numberRegex = "^[0-9]{11}$";
+        String numberRegex = "^[0-9]{4}$";
         if(computer.getName().matches(nameRegex) && computer.getCard().matches(numberRegex)){
             computerService.save(computer);
             return new ResponseEntity<>("create computer complete",HttpStatus.OK);
@@ -58,15 +58,11 @@ public class computerController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateComputerById(@PathVariable("id")int id,@RequestBody Computer computer){
-        Optional<Computer> computerOptional = computerService.findById(id);
-        if (!computerOptional.isPresent()){
-            return new ResponseEntity<>("computer id not exit",HttpStatus.NO_CONTENT);
-        }else {
-            computerOptional.get().setId(id);
-            computerService.save(computerOptional.get());
+            computer.setId(id);
+            computerService.save(computer);
             return new ResponseEntity<>("computer is update",HttpStatus.NO_CONTENT);
         }
-    }
+
     @GetMapping("/search/{variable}")
     public ResponseEntity<Iterable<Computer>> showAllComputerBySearch(@PathVariable("variable") String variable){
         Iterable<Computer> computers = computerService.findAllByNameContaining(variable);
